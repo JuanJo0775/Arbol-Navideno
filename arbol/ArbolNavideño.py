@@ -20,21 +20,57 @@ pygame.mixer.music.play(-1)  # (-1) = reproducir en bucle
 # Colores posibles de las luces
 colores = ["red", "green", "cyan", "magenta", "blue", "white"]
 
-# Estructura del árbol navideño
-arbol = [
-    "       ★       ",
-    "               ",
-    "       *       ",
-    "      ***      ",
-    "     *****     ",
-    "    *******    ",
-    "   *********   ",
-    "  ***********  ",
-    " ************* ",
-    "***************",
-    "      | |      ",
-    "      | |      ",
-]
+# ==========================
+# FUNCIÓN GENERADORA DEL ÁRBOL
+# ==========================
+
+def generar_forma_arbol(altura, angulo=70):
+    """
+    Genera la forma del árbol como una lista de strings.
+    
+    Args:
+        altura: Número de filas del triángulo
+        angulo: Ángulo de inclinación en grados (aprox 70 para árbol típico)
+    """
+    arbres = []
+    
+    # Calcular incremento de asteriscos por fila basado en el ángulo
+    # Para 70 grados: ~2.7 asteriscos por fila
+    incremento = (angulo / 25)  # Ajuste para obtener la proporción correcta
+    
+    max_asteriscos = 1 + (altura - 1) * incremento
+    max_asteriscos = int(max_asteriscos)
+    
+    if max_asteriscos % 2 == 0:
+        max_asteriscos += 1
+    
+    espacios_totales = max_asteriscos - 1
+    
+    # Agregar estrella en la punta
+    espacios_punta = espacios_totales // 2
+    arbres.append(" " * espacios_punta + "★" + " " * espacios_punta)
+    arbres.append("")
+    
+    # Generar el triángulo de asteriscos
+    for fila in range(altura):
+        num_asteriscos = 1 + fila * int(incremento)
+        if num_asteriscos > max_asteriscos:
+            num_asteriscos = max_asteriscos
+        
+        espacios = (max_asteriscos - num_asteriscos) // 2
+        ligne = " " * espacios + "*" * num_asteriscos + " " * espacios
+        arbres.append(ligne)
+    
+    # Agregar el tronco (solo dos |)
+    espacios_tronco = (max_asteriscos - 1) // 2
+    
+    for _ in range(2):
+        arbres.append(" " * espacios_tronco + "|" + " " * espacios_tronco)
+    
+    return arbres
+
+# Generar el árbol con altura 10 y ángulo ~70 grados
+arbol = generar_forma_arbol(altura=10, angulo=70)
 
 # ==========================
 # FUNCIÓN DE DIBUJO
@@ -82,7 +118,7 @@ def generar_arbol():
 # ==========================
 
 root = tk.Tk()
-root.title("Árbol de Navidad 🎄")
+root.title("Feliz Navidad")
 root.configure(bg="black")
 
 # Centrar la ventana en pantalla
